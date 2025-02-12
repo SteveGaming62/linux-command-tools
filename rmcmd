@@ -1,0 +1,26 @@
+#!/bin/bash
+
+YELLOW=$(tput setaf 3)
+RED=$(tput setaf 1)
+RESET=$(tput sgr0)
+GREEN=$(tput setaf 2)
+
+if [[ -z $1 ]]; then
+    echo "${RED}ERROR: Command name is null${RESET}"
+    exit 1
+fi
+
+if [[ -e /usr/bin/$1 ]]; then
+    echo "${YELLOW}Are you sure you want to remove the command \"$1\"? [Y/n]: ${RESET}"
+    read -r response
+    response=${response,,}  # tolower
+    if [[ $response =~ ^(yes|y)$ ]]; then
+        sudo rm /usr/bin/$1
+        echo "${GREEN}Command \"$1\" has been removed.${RESET}"
+    else
+        echo "${YELLOW}Operation cancelled.${RESET}"
+    fi
+else
+    echo "${RED}ERROR: Command \"$1\" does not exist.${RESET}"
+    exit 1
+fi

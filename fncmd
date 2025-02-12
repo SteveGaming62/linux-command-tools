@@ -1,0 +1,60 @@
+#!/bin/bash
+
+YELLOW=$(tput setaf 3)
+RED=$(tput setaf 1)
+RESET=$(tput sgr0)
+GREEN=$(tput setaf 2)
+
+if [[ -z $1 ]]; then
+    echo "${RED}ERROR: Search term is null${RESET}"
+    exit 1
+fi
+
+# Function to list all commands in /usr/bin
+list_all_commands() {
+    results=$(ls /usr/bin)
+    count=$(echo "$results" | wc -l)
+    if [[ $1 == "-n" ]]; then
+        echo "${GREEN}Number of commands: ${count}${RESET}"
+    else
+        echo "${GREEN}Commands found (${count}):${RESET}"
+        echo "$results"
+    fi
+}
+
+# Function to search for commands containing the search term
+search_commands() {
+    results=$(ls /usr/bin | grep -i $1)
+    count=$(echo "$results" | wc -l)
+    if [[ -z $results ]]; then
+        echo "${YELLOW}No commands found containing \"$1\".${RESET}"
+    else
+        if [[ $2 == "-n" ]]; then
+            echo "${GREEN}Number of commands found: ${count}${RESET}"
+        else
+            echo "${GREEN}Commands found (${count}):${RESET}"
+            echo "$results"
+        fi
+    fi
+}
+
+if [[ $1 == "-a" ]]; then
+    if [[ $2 == "-n" ]]; then
+        list_all_commands "-n"
+    elif [[ -n $2 ]]; then
+        echo "${RED}ERROR: -a option cannot be used with a search term${RESET}"
+        exit 1
+    else
+        list_all_commands
+    fi
+elif [[ $1 == "-n" ]]; then
+    if [[ $2 == "-a" ]]; then
+        list_all_commands "-n"
+    else
+        search_commands $2 "-n"
+    fi
+elif [[ $1 == "-an" ]] || [[ $1 == "-na" ]]; then
+    list_all_commands "-n"
+else
+    search_commands $1 $2
+fi

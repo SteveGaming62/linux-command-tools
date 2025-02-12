@@ -1,0 +1,25 @@
+#!/bin/bash
+
+YELLOW=$(tput setaf 3)
+RED=$(tput setaf 1)
+RESET=$(tput sgr0)
+GREEN=$(tput setaf 2)
+
+if [[ -z $1 ]]; then
+    echo "${RED}ERROR: Command name is null${RESET}"
+    exit 1
+fi
+
+if [[ ! -e $1 ]]; then
+    echo "${RED}ERROR: File \"$1\" does not exist.${RESET}"
+    exit 1
+fi
+
+if [[ -e /usr/bin/$1 ]]; then
+    echo "${YELLOW}Updating \"$1\"...${RESET}"
+    sudo cp $1 /usr/bin
+    echo "${GREEN}Command \"$1\" has been updated.${RESET}"
+else
+    echo "${RED}ERROR: Command \"$1\" does not exist.${RESET}"
+    exit 1
+fi

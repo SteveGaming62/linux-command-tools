@@ -1,0 +1,30 @@
+#!/bin/bash
+
+YELLOW=$(tput setaf 3)
+RED=$(tput setaf 1)
+RESET=$(tput sgr0)
+GREEN=$(tput setaf 2)
+
+dir=$(pwd)
+echo "${YELLOW}TIP: Try not to use file extensions for the best experience.${RESET}"
+
+if [[ -z $1 ]]; then
+    echo "${RED}ERROR: File name is null${RESET}"
+    exit 1
+fi
+
+if [[ -e $1 ]]; then
+    cd /usr/bin
+    if [[ -e $1 ]]; then
+        echo "${RED}ERROR: Command already exists${RESET}"
+        exit 1
+    else
+        cd $dir
+        sudo chmod +x $1
+        sudo cp $1 /usr/bin
+        echo "${GREEN}Command has successfully been created. Type \"$1\" to use it. Use \"rmcmd $1\" to remove it. Use \"upcmd $1\" to update it.${RESET}"
+    fi
+else
+    echo "${RED}ERROR: File doesn't exist${RESET}"
+    exit 1
+fi
